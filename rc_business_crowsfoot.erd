@@ -1,0 +1,78 @@
+erdiagram RCBusinessModel
+notation=crowsfoot
+
+entity Manufacturer {
+    manufacturer_id: INTEGER key
+    name: VARCHAR(100)
+    contact_info: VARCHAR(200)
+    address: VARCHAR(200)
+}
+
+entity Product {
+    product_id: INTEGER key
+    manufacturer_id: INTEGER
+    name: VARCHAR(100)
+    description: TEXT
+    price: DECIMAL(10,2)
+    stock_level: INTEGER
+    status: VARCHAR(20)
+}
+
+entity Customer {
+    customer_id: INTEGER key
+    name: VARCHAR(100)
+    email: VARCHAR(100)
+    phone: VARCHAR(20)
+    billing_address: VARCHAR(200)
+    shipping_address: VARCHAR(200)
+}
+
+entity Order {
+    order_id: INTEGER key
+    customer_id: INTEGER
+    order_date: DATETIME
+    status: VARCHAR(20)
+    total_amount: DECIMAL(10,2)
+}
+
+entity Line {
+    line_id: INTEGER key
+    order_id: INTEGER
+    product_id: INTEGER
+    quantity: INTEGER
+    unit_price: DECIMAL(10,2)
+}
+
+entity Invoice {
+    invoice_id: INTEGER key
+    order_id: INTEGER
+    customer_id: INTEGER
+    invoice_date: DATETIME
+    due_date: DATETIME
+    payment_status: VARCHAR(20)
+    total_amount: DECIMAL(10,2)
+}
+
+relationship ManufacturerProduct {
+    Manufacturer[1 | "manufacturer"] -> Product[1..N | "products"]
+}
+
+relationship ProductLine {
+    Product[1 | "product"] -> Line[0..N | "orderlines"]
+}
+
+relationship LineOrder {
+    Line[1..N | "lines"] -> Order[1 | "order"]
+}
+
+relationship OrderInvoice {
+    Order[1 | "order"] -> Invoice[1 | "invoice"]
+}
+
+relationship CustomerOrder {
+    Customer[1 | "customer"] -> Order[1..N | "orders"]
+}
+
+relationship CustomerInvoice {
+    Customer[1 | "customer"] -> Invoice[1..N | "invoices"]
+}
