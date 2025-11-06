@@ -1,11 +1,14 @@
 erdiagram RCBusinessModel
 notation=crowsfoot
 
+# Entities with their attributes
 entity Manufacturer {
     manufacturer_id: INTEGER key
     name: VARCHAR(100)
     contact_info: VARCHAR(200)
     address: VARCHAR(200)
+    email: VARCHAR(100)
+    phone: VARCHAR(20)
 }
 
 entity Product {
@@ -15,7 +18,9 @@ entity Product {
     description: TEXT
     price: DECIMAL(10,2)
     stock_level: INTEGER
-    status: VARCHAR(20)
+    status: VARCHAR(20) # active, discontinued
+    created_date: DATETIME
+    modified_date: DATETIME
 }
 
 entity Customer {
@@ -25,14 +30,18 @@ entity Customer {
     phone: VARCHAR(20)
     billing_address: VARCHAR(200)
     shipping_address: VARCHAR(200)
+    customer_type: VARCHAR(20) # retail, wholesale
+    created_date: DATETIME
 }
 
 entity Order {
     order_id: INTEGER key
     customer_id: INTEGER
     order_date: DATETIME
-    status: VARCHAR(20)
+    status: VARCHAR(20) # pending, shipped, delivered, cancelled
     total_amount: DECIMAL(10,2)
+    shipping_address: VARCHAR(200)
+    notes: TEXT
 }
 
 entity Line {
@@ -41,6 +50,7 @@ entity Line {
     product_id: INTEGER
     quantity: INTEGER
     unit_price: DECIMAL(10,2)
+    subtotal: DECIMAL(10,2)
 }
 
 entity Invoice {
@@ -49,10 +59,13 @@ entity Invoice {
     customer_id: INTEGER
     invoice_date: DATETIME
     due_date: DATETIME
-    payment_status: VARCHAR(20)
+    payment_status: VARCHAR(20) # pending, paid, overdue
+    payment_method: VARCHAR(50) # credit card, bank transfer, check
     total_amount: DECIMAL(10,2)
+    paid_amount: DECIMAL(10,2)
 }
 
+# Relationships based on business rules
 relationship ManufacturerProduct {
     Manufacturer[1 | "manufacturer"] -> Product[1..N | "products"]
 }
